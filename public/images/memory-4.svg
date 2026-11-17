@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F0F9FF"/>
+      <stop offset="100%" stop-color="#E0F2FE"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bgGrad4)"/>
+  <circle cx="200" cy="180" r="110" fill="#FFFDF9" opacity="0.8"/>
+  <!-- Polaroid camera with heart lens -->
+  <rect x="135" y="145" width="130" height="100" rx="15" fill="#38BDF8"/>
+  <rect x="150" y="130" width="40" height="15" rx="4" fill="#0284C7"/>
+  <circle cx="200" cy="195" r="32" fill="#FFFDF9"/>
+  <circle cx="200" cy="195" r="24" fill="#0284C7"/>
+  <path d="M200 198 C195 190 185 192 188 198 C192 203 200 208 200 208 C200 208 208 203 212 198 C215 192 205 190 200 198 Z" fill="#FF758F"/>
+  <circle cx="245" cy="165" r="6" fill="#FFD166"/>
+  <text x="200" y="330" font-family="'Caveat', cursive, sans-serif" font-size="28" font-weight="bold" fill="#3B657A" text-anchor="middle">
+    Your Beautiful Laugh 🎀
+  </text>
+  <text x="200" y="360" font-family="'Nunito', sans-serif" font-size="14" fill="#6992A8" text-anchor="middle">
+    (Replace with our photo in public/images)
+  </text>
+</svg>

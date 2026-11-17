@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background-color: #FFFDF9;
+    background-image: 
+      radial-gradient(#FFE4E8 0.75px, transparent 0.75px),
+      radial-gradient(#F5EEFC 0.75px, #FFFDF9 0.75px);
+    background-size: 30px 30px;
+    background-position: 0 0, 15px 15px;
+    font-family: 'Nunito', 'Quicksand', sans-serif;
+    color: #4A4A4A;
+    overflow-x: hidden;
+  }
+}
+
+/* Custom Soft Pastel Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #FFFDF9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #FFCCD5;
+  border-radius: 9999px;
+  border: 2px solid #FFFDF9;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #FFA3B5;
+}
+
+/* Accessibility: Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

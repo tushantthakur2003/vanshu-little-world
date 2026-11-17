@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F5EEFC"/>
+      <stop offset="100%" stop-color="#E8D7F1"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bgGrad2)"/>
+  <circle cx="200" cy="180" r="110" fill="#FFFDF9" opacity="0.8"/>
+  <!-- Cozy coffee cups with heart steam -->
+  <path d="M150 170 h40 v35 c0 15 -10 20 -20 20 s-20 -5 -20 -20 z" fill="#FFB088"/>
+  <path d="M190 180 h10 c5 0 8 4 8 8 s-3 8 -8 8 h-10" stroke="#FFB088" stroke-width="4" fill="none"/>
+  <path d="M210 170 h40 v35 c0 15 -10 20 -20 20 s-20 -5 -20 -20 z" fill="#B388EB"/>
+  <path d="M250 180 h10 c5 0 8 4 8 8 s-3 8 -8 8 h-10" stroke="#B388EB" stroke-width="4" fill="none"/>
+  <!-- Steam hearts -->
+  <path d="M170 145 C165 135 150 140 157 148 C165 155 170 160 170 160 C170 160 175 155 183 148 C190 140 175 135 170 145 Z" fill="#FF758F"/>
+  <path d="M230 145 C225 135 210 140 217 148 C225 155 230 160 230 160 C230 160 235 155 243 148 C250 140 235 135 230 145 Z" fill="#B388EB"/>
+  <text x="200" y="330" font-family="'Caveat', cursive, sans-serif" font-size="28" font-weight="bold" fill="#6A497A" text-anchor="middle">
+    Coffee & Sweet Smiles ☕
+  </text>
+  <text x="200" y="360" font-family="'Nunito', sans-serif" font-size="14" fill="#997AA8" text-anchor="middle">
+    (Replace with our photo in public/images)
+  </text>
+</svg>

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF1EB"/>
+      <stop offset="100%" stop-color="#FFE5D9"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bgGrad3)"/>
+  <circle cx="200" cy="180" r="110" fill="#FFFDF9" opacity="0.8"/>
+  <!-- Moon and gentle stars -->
+  <path d="M220 130 C190 130 160 150 160 190 C160 230 190 250 220 250 C200 240 190 215 190 190 C190 165 200 140 220 130 Z" fill="#FFD166"/>
+  <path d="M245 150 Q247 142 255 139 Q247 136 245 128 Q243 136 235 139 Q243 142 245 150 Z" fill="#FF758F"/>
+  <path d="M140 140 Q142 134 148 131 Q142 128 140 122 Q138 128 132 131 Q138 134 140 140 Z" fill="#FFB088"/>
+  <text x="200" y="330" font-family="'Caveat', cursive, sans-serif" font-size="28" font-weight="bold" fill="#7A5649" text-anchor="middle">
+    Under The Starlight 🌙
+  </text>
+  <text x="200" y="360" font-family="'Nunito', sans-serif" font-size="14" fill="#A8837A" text-anchor="middle">
+    (Replace with our photo in public/images)
+  </text>
+</svg>

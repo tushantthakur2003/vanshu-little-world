@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE4E8"/>
+      <stop offset="100%" stop-color="#FFCCD5"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bgGrad1)"/>
+  <circle cx="200" cy="180" r="110" fill="#FFFDF9" opacity="0.8"/>
+  <!-- Cute hearts & star cluster -->
+  <path d="M200 190 C160 140 100 170 140 220 C180 260 200 280 200 280 C200 280 220 260 260 220 C300 170 240 140 200 190 Z" fill="#FF758F"/>
+  <path d="M120 110 Q122 98 134 94 Q122 90 120 78 Q118 90 106 94 Q118 98 120 110 Z" fill="#FFD166"/>
+  <path d="M280 120 Q282 108 294 104 Q282 100 280 88 Q278 100 266 104 Q278 108 280 120 Z" fill="#FFA3B5"/>
+  <text x="200" y="330" font-family="'Caveat', cursive, sans-serif" font-size="28" font-weight="bold" fill="#7A4956" text-anchor="middle">
+    Our Sweet Beginning ✨
+  </text>
+  <text x="200" y="360" font-family="'Nunito', sans-serif" font-size="14" fill="#A87A87" text-anchor="middle">
+    (Replace with our photo in public/images)
+  </text>
+</svg>
