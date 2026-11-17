@@ -22,15 +22,27 @@ const checkIsAdminRoute = () => {
   return path === '/admin' || path === '/admin/' || hash === '#admin';
 };
 
+const getInitialContent = () => {
+  try {
+    const saved =
+      localStorage.getItem('vanshu_cms_published_content') ||
+      localStorage.getItem('vanshu_cms_draft_content') ||
+      localStorage.getItem('vanshu_little_world_site_content') ||
+      localStorage.getItem('vanshu_little_world_vanshu_cms_published_content');
+    if (saved) {
+      return JSON.parse(saved);
+    }
+  } catch (e) {}
+  return fallbackContent;
+};
+
 export const App = () => {
   // Route state (/admin vs public website)
   const [isAdminRoute, setIsAdminRoute] = useState(checkIsAdminRoute);
   const [authVersion, setAuthVersion] = useState(0);
 
-  // Published site content state (Vanshu strictly sees published content)
-  const [content, setContent] = useState(() =>
-    loadStoredData('vanshu_cms_published_content', fallbackContent)
-  );
+  // Published site content state (synced with both storage and cloud)
+  const [content, setContent] = useState(getInitialContent);
 
   // Welcome screen view state
   const [welcomePassed, setWelcomePassed] = useState(() =>
@@ -42,20 +54,21 @@ export const App = () => {
     loadStoredData('opened_cards', {})
   );
 
-  // Load published content from service
-  useEffect(() => {
-    const fetchPublished = async () => {
-      try {
-        const res = await getPublishedContent();
-        if (res?.content) {
-          setContent(res.content);
-        }
-      } catch (err) {
-        console.warn('Error fetching published content:', err);
+  // Re-fetch published content on route changes or mount
+  const refreshContent = async () => {
+    try {
+      const res = await getPublishedContent();
+      if (res?.content) {
+        setContent(res.content);
       }
-    };
-    fetchPublished();
-  }, []);
+    } catch (err) {
+      console.warn('Error fetching published content:', err);
+    }
+  };
+
+  useEffect(() => {
+    refreshContent();
+  }, [isAdminRoute]);
 
   // Listen for browser navigation changes (/admin <-> /)
   useEffect(() => {
@@ -77,6 +90,7 @@ export const App = () => {
       window.location.hash = '';
     }
     setIsAdminRoute(false);
+    refreshContent();
   };
 
   const totalCardsCount = 6;
@@ -144,6 +158,7 @@ export const App = () => {
       <AdminDashboard
         key={authVersion}
         onNavigateHome={navigateToHome}
+        onContentUpdated={(updated) => setContent(updated)}
       />
     );
   }

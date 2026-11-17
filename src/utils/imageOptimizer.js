@@ -6,9 +6,9 @@
 
 export const optimizeImage = async (
   file,
-  maxWidth = 1600,
-  maxHeight = 1600,
-  quality = 0.85
+  maxWidth = 1000,
+  maxHeight = 1000,
+  quality = 0.75
 ) => {
   return new Promise((resolve, reject) => {
     // If not an image or is SVG, return original file

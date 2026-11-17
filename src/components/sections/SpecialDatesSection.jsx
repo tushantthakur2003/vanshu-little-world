@@ -10,6 +10,13 @@ export const SpecialDatesSection = ({ data, onSaveDates, showInlineEdit = false 
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0, totalDaysTogether: 0 });
   const [isAnniversaryToday, setIsAnniversaryToday] = useState(false);
 
+  // Sync internal state whenever props update
+  useEffect(() => {
+    if (data) {
+      setDatesConfig(data);
+    }
+  }, [data]);
+
   // Calculate live countdown to NEXT anniversary & total days together
   useEffect(() => {
     const updateCountdown = () => {

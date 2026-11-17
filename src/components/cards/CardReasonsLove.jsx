@@ -12,6 +12,13 @@ export const CardReasonsLove = ({ data, onMarkOpened, isOpened, onSaveReasons, s
   const [isEditing, setIsEditing] = useState(false);
   const [reasonsList, setReasonsList] = useState(data.reasons || []);
 
+  // Sync reasons list when updated
+  React.useEffect(() => {
+    if (data?.reasons) {
+      setReasonsList(data.reasons);
+    }
+  }, [data?.reasons]);
+
   const handleOpen = () => {
     setIsOpen(true);
     playChime();

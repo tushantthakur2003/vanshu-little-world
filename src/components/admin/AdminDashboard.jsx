@@ -21,7 +21,7 @@ import { GiftBox } from '../illustrations/GiftBox';
 import { WashiTape, PinkBow } from '../illustrations/ScrapbookDecorations';
 import { playCutePop, playChime } from '../../utils/soundEffects';
 
-export const AdminDashboard = ({ onNavigateHome }) => {
+export const AdminDashboard = ({ onNavigateHome, onContentUpdated }) => {
   const [formData, setFormData] = useState(null);
   const [activeSection, setActiveSection] = useState('general');
   const [isLoading, setIsLoading] = useState(true);
@@ -59,16 +59,17 @@ export const AdminDashboard = ({ onNavigateHome }) => {
     setTimeout(() => setStatusNotice(null), 4000);
   };
 
-  // 1. SAVE DRAFT (Does not affect public website)
+  // 1. SAVE CHANGES (Persists immediately to website and storage)
   const handleSaveDraft = async () => {
     if (!formData) return;
     setIsSaving(true);
     playCutePop();
     try {
-      const res = await saveDraftContent(formData);
-      notify('Draft changes saved successfully! (Not published to live site yet)', 'success');
+      await saveDraftContent(formData);
+      if (onContentUpdated) onContentUpdated(formData);
+      notify('All changes saved and updated on the website!', 'success');
     } catch (err) {
-      notify('Failed to save draft. Please try again.', 'error');
+      notify('Failed to save changes. Please try again.', 'error');
     } finally {
       setIsSaving(false);
     }
@@ -77,13 +78,13 @@ export const AdminDashboard = ({ onNavigateHome }) => {
   // 2. PUBLISH CHANGES (Makes draft live for Vanshu)
   const handlePublish = async () => {
     if (!formData) return;
-    if (!window.confirm("Publish changes to the live website for Vanshu now?")) return;
     setIsPublishing(true);
     playChime();
     try {
-      const res = await publishContent(formData);
+      await publishContent(formData);
       setHasBackup(true);
-      notify('🎉 Website published successfully! Vanshu will see your new memories now.', 'publish');
+      if (onContentUpdated) onContentUpdated(formData);
+      notify('🎉 Website published and updated live for Vanshu!', 'publish');
     } catch (err) {
       notify('Publishing failed. Please check your connection.', 'error');
     } finally {
@@ -1109,11 +1110,12 @@ export const AdminDashboard = ({ onNavigateHome }) => {
                     <label className="text-[11px] font-cute font-bold text-gray-700">Anniversary Date (YYYY-MM-DD):</label>
                     <input
                       type="date"
-                      value={formData.anniversaryInfo?.date || ''}
+                      value={formData.anniversaryInfo?.date || formData.anniversary?.date || ''}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
                           anniversaryInfo: { ...formData.anniversaryInfo, date: e.target.value },
+                          anniversary: { ...formData.anniversary, date: e.target.value },
                         })
                       }
                       className="w-full mt-1 p-2.5 text-xs font-cute rounded-xl border border-pastel-pink bg-white"

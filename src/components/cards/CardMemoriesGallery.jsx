@@ -10,6 +10,13 @@ export const CardMemoriesGallery = ({ data, onMarkOpened, isOpened, onSavePhotos
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [isAddingNew, setIsAddingNew] = useState(false);
 
+  // Sync photos state whenever data updates from CMS or storage
+  React.useEffect(() => {
+    if (data?.photos) {
+      setPhotos(data.photos);
+    }
+  }, [data?.photos]);
+
   // New photo form state
   const [newTitle, setNewTitle] = useState('');
   const [newDate, setNewDate] = useState('');

@@ -3,7 +3,7 @@ const STORAGE_PREFIX = 'vanshu_little_world_';
 
 export const loadStoredData = (key, fallback) => {
   try {
-    const raw = localStorage.getItem(STORAGE_PREFIX + key);
+    const raw = localStorage.getItem(STORAGE_PREFIX + key) || localStorage.getItem(key);
     if (!raw) return fallback;
     return JSON.parse(raw);
   } catch (err) {

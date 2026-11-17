@@ -46,9 +46,14 @@ export const getPublishedContent = async () => {
     }
   }
 
-  // Fallback: Local storage published content or default config file
+  // Fallback: Local storage published content, draft content, or default config file
   try {
-    const raw = localStorage.getItem(STORAGE_KEYS.PUBLISHED);
+    const raw =
+      localStorage.getItem(STORAGE_KEYS.PUBLISHED) ||
+      localStorage.getItem(STORAGE_KEYS.DRAFT) ||
+      localStorage.getItem('vanshu_little_world_site_content') ||
+      localStorage.getItem('vanshu_little_world_vanshu_cms_published_content');
+
     if (raw) {
       return {
         content: JSON.parse(raw),
@@ -56,7 +61,9 @@ export const getPublishedContent = async () => {
         source: 'local',
       };
     }
-  } catch (e) {}
+  } catch (e) {
+    console.warn('Error parsing cached site content:', e);
+  }
 
   return {
     content: defaultContent,
@@ -132,11 +139,26 @@ export const getDraftContent = async () => {
 export const saveDraftContent = async (draftData) => {
   const timestamp = new Date().toISOString();
 
-  // Save to LocalStorage immediately
+  // Save to LocalStorage immediately across all keys so edits are never lost
   try {
     localStorage.setItem(STORAGE_KEYS.DRAFT, JSON.stringify(draftData));
+    localStorage.setItem(STORAGE_KEYS.PUBLISHED, JSON.stringify(draftData));
+    localStorage.setItem('vanshu_little_world_site_content', JSON.stringify(draftData));
+    localStorage.setItem('vanshu_little_world_vanshu_cms_published_content', JSON.stringify(draftData));
     localStorage.setItem('vanshu_cms_draft_updated_at', timestamp);
-  } catch (e) {}
+    localStorage.setItem('vanshu_cms_published_at', timestamp);
+  } catch (e) {
+    console.warn('LocalStorage save error (likely quota exceeded):', e);
+  }
+
+  // Also auto-save to local file if dev server is running
+  try {
+    fetch('/__api/save-content', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(draftData),
+    }).catch(() => {});
+  } catch (_) {}
 
   if (isSupabaseConfigured() && supabase) {
     try {
@@ -173,17 +195,19 @@ export const publishContent = async (draftData) => {
     if (raw) currentPublished = JSON.parse(raw);
   } catch (e) {}
 
-  // 2. Save backup & published in LocalStorage
+  // 2. Save backup & published across all LocalStorage keys
   try {
     if (currentPublished) {
       localStorage.setItem(STORAGE_KEYS.BACKUP, JSON.stringify(currentPublished));
     }
     localStorage.setItem(STORAGE_KEYS.PUBLISHED, JSON.stringify(draftData));
     localStorage.setItem(STORAGE_KEYS.DRAFT, JSON.stringify(draftData));
-    localStorage.setItem('vanshu_cms_published_at', timestamp);
-    // Also update legacy site_content key so any component has immediate sync
     localStorage.setItem('vanshu_little_world_site_content', JSON.stringify(draftData));
-  } catch (e) {}
+    localStorage.setItem('vanshu_little_world_vanshu_cms_published_content', JSON.stringify(draftData));
+    localStorage.setItem('vanshu_cms_published_at', timestamp);
+  } catch (e) {
+    console.warn('LocalStorage publish error:', e);
+  }
 
   // 3. Sync to Supabase Cloud if connected
   if (isSupabaseConfigured() && supabase) {

@@ -14,7 +14,13 @@ export const SecretSurpriseSection = ({
   const isUnlocked = openedCardsCount >= totalCardsCount;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [editedMessage, setEditedMessage] = useState(data.message);
+  const [editedMessage, setEditedMessage] = useState(data?.message || '');
+
+  React.useEffect(() => {
+    if (data?.message) {
+      setEditedMessage(data.message);
+    }
+  }, [data?.message]);
 
   const handleOpenFinalSurprise = () => {
     if (!isUnlocked) return;

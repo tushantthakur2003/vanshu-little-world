@@ -8,6 +8,12 @@ export const CardEnvelopeLetter = ({ data, onMarkOpened, isOpened, onSaveMessage
   const [isEditing, setIsEditing] = useState(false);
   const [editedMessage, setEditedMessage] = useState(data.message);
 
+  React.useEffect(() => {
+    if (data?.message) {
+      setEditedMessage(data.message);
+    }
+  }, [data?.message]);
+
   const handleOpenLetter = () => {
     setIsOpen(true);
     playChime();

@@ -11,6 +11,12 @@ export const CardSurpriseBox = ({ data, onMarkOpened, isOpened, onSaveMessage, s
   const [isEditing, setIsEditing] = useState(false);
   const [editedMessage, setEditedMessage] = useState(data.message);
 
+  React.useEffect(() => {
+    if (data?.message) {
+      setEditedMessage(data.message);
+    }
+  }, [data?.message]);
+
   const handleOpenCard = () => {
     setIsModalOpen(true);
     playChime();

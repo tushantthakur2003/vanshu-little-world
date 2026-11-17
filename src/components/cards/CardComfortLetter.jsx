@@ -10,6 +10,12 @@ export const CardComfortLetter = ({ data, onMarkOpened, isOpened, onSaveMessage,
   const [isEditing, setIsEditing] = useState(false);
   const [editedMessage, setEditedMessage] = useState(data.message);
 
+  React.useEffect(() => {
+    if (data?.message) {
+      setEditedMessage(data.message);
+    }
+  }, [data?.message]);
+
   const handleOpen = () => {
     setIsOpen(true);
     playChime();
