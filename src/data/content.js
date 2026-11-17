@@ -207,10 +207,11 @@ I love you, Vanshu. ♡`,
 
   // 11. Background Music Settings
   musicSettings: {
-    title: "Vanshu's Lullaby (Music Box)",
-    artist: "Romantic Melodies ♡",
-    customAudioUrl: "", // Optional custom MP3 audio URL
+    title: "The Neighbourhood - Reflections",
+    artist: "The Neighbourhood",
+    customAudioUrl: "/music.mp3",
     volume: 0.35,
+    hasCustomAudio: true,
   },
 };
 

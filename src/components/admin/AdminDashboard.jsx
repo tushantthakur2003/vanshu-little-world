@@ -287,15 +287,20 @@ export const AdminDashboard = ({ onNavigateHome, onContentUpdated }) => {
     playCutePop();
     try {
       const res = await uploadMusicFile(file);
-      setFormData({
+      const updatedForm = {
         ...formData,
         musicSettings: {
           ...formData?.musicSettings,
           customAudioUrl: res.url,
           title: file.name.replace(/\.[^/.]+$/, ""),
+          hasCustomAudio: true,
+          fileName: file.name,
         },
-      });
-      notify('Background audio uploaded successfully!', 'success');
+      };
+      setFormData(updatedForm);
+      await saveDraftContent(updatedForm);
+      if (onContentUpdated) onContentUpdated(updatedForm);
+      notify(`"${file.name}" uploaded and set as background music!`, 'success');
     } catch (err) {
       notify('Failed to upload audio file.', 'error');
     }
@@ -303,20 +308,29 @@ export const AdminDashboard = ({ onNavigateHome, onContentUpdated }) => {
 
   // Toggle preview audio in admin
   const toggleAudioPreview = () => {
-    const audioUrl = formData?.musicSettings?.customAudioUrl;
-    if (!audioUrl) return;
+    const audioUrl = formData?.musicSettings?.customAudioUrl || '/music.mp3';
 
     if (previewAudioPlaying && audioPreviewObj) {
       audioPreviewObj.pause();
       setPreviewAudioPlaying(false);
     } else {
+      if (audioPreviewObj) {
+        audioPreviewObj.pause();
+      }
       const a = new Audio(audioUrl);
       a.volume = formData?.musicSettings?.volume || 0.35;
       a.play().then(() => {
         setAudioPreviewObj(a);
         setPreviewAudioPlaying(true);
       }).catch(() => {
-        notify('Audio preview playback blocked or URL invalid.', 'error');
+        const fallbackAudio = new Audio('/music.mp3');
+        fallbackAudio.volume = formData?.musicSettings?.volume || 0.35;
+        fallbackAudio.play().then(() => {
+          setAudioPreviewObj(fallbackAudio);
+          setPreviewAudioPlaying(true);
+        }).catch(() => {
+          notify('Audio preview playback blocked by browser. Click to interact.', 'error');
+        });
       });
       a.onended = () => setPreviewAudioPlaying(false);
     }
@@ -1387,14 +1401,14 @@ export const AdminDashboard = ({ onNavigateHome, onContentUpdated }) => {
                   <label className="text-xs font-cute font-bold text-gray-700">Audio URL or File Path:</label>
                   <input
                     type="text"
-                    value={formData.musicSettings?.customAudioUrl?.startsWith('data:') ? 'Custom Uploaded Audio File ✓' : formData.musicSettings?.customAudioUrl || ''}
+                    value={formData.musicSettings?.customAudioUrl?.startsWith('blob:') || formData.musicSettings?.customAudioUrl?.startsWith('data:') ? (formData.musicSettings?.title || 'Custom Uploaded Audio File ✓') : (formData.musicSettings?.customAudioUrl || '/music.mp3')}
                     onChange={(e) =>
                       setFormData({
                         ...formData,
-                        musicSettings: { ...formData.musicSettings, customAudioUrl: e.target.value },
+                        musicSettings: { ...formData.musicSettings, customAudioUrl: e.target.value, title: e.target.value },
                       })
                     }
-                    placeholder="https://.../song.mp3"
+                    placeholder="/music.mp3 or https://.../song.mp3"
                     className="w-full mt-1 p-2.5 text-xs font-cute rounded-xl border border-pastel-pink bg-white"
                   />
                 </div>

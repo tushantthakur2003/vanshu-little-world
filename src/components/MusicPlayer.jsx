@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Music, Volume2, VolumeX, Play, Pause, Sparkles } from 'lucide-react';
+import { getAudioFromStorage } from '../utils/imageStorage';
 
 export const MusicPlayer = ({ customAudioUrl, defaultVolume = 0.35 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(defaultVolume);
   const [isMuted, setIsMuted] = useState(false);
   const [showControls, setShowControls] = useState(false);
+  const [activeAudioSrc, setActiveAudioSrc] = useState(customAudioUrl || '/music.mp3');
 
   // Synthesizer Refs
   const audioCtxRef = useRef(null);
@@ -30,6 +32,55 @@ export const MusicPlayer = ({ customAudioUrl, defaultVolume = 0.35 }) => {
     { freq: 587.33, dur: 0.6 }, // D5
     { freq: 523.25, dur: 1.4 }, // C5
   ];
+
+  // Resolve audio source on mount or prop change
+  useEffect(() => {
+    let isMounted = true;
+    const resolveSource = async () => {
+      // 1. If explicit URL provided
+      if (customAudioUrl && customAudioUrl.length > 5 && !customAudioUrl.startsWith('data:')) {
+        if (isMounted) setActiveAudioSrc(customAudioUrl);
+        return;
+      }
+
+      // 2. Check IndexedDB for uploaded audio blob
+      try {
+        const blob = await getAudioFromStorage('custom_bg_music');
+        if (blob && isMounted) {
+          const blobUrl = URL.createObjectURL(blob);
+          if (isMounted) {
+            setActiveAudioSrc(blobUrl);
+            return;
+          }
+        }
+      } catch (e) {}
+
+      // 3. Fallback to bundled /music.mp3
+      if (isMounted) {
+        setActiveAudioSrc(customAudioUrl || '/music.mp3');
+      }
+    };
+
+    resolveSource();
+    return () => {
+      isMounted = false;
+    };
+  }, [customAudioUrl]);
+
+  // When activeAudioSrc changes, ensure audio element reloads
+  useEffect(() => {
+    if (customAudioRef.current && activeAudioSrc) {
+      customAudioRef.current.src = activeAudioSrc;
+      customAudioRef.current.load();
+    }
+  }, [activeAudioSrc]);
+
+  // Volume & Mute Sync
+  useEffect(() => {
+    if (customAudioRef.current) {
+      customAudioRef.current.volume = isMuted ? 0 : volume;
+    }
+  }, [volume, isMuted]);
 
   // Play a single music-box chime
   const playMusicBoxNote = (ctx, freq, duration) => {
@@ -92,23 +143,31 @@ export const MusicPlayer = ({ customAudioUrl, defaultVolume = 0.35 }) => {
   const togglePlay = () => {
     if (isPlaying) {
       // Pause
-      if (customAudioUrl && customAudioRef.current) {
+      if (customAudioRef.current) {
         customAudioRef.current.pause();
-      } else {
-        stopSynthMelody();
       }
+      stopSynthMelody();
       setIsPlaying(false);
     } else {
       // Play
-      if (customAudioUrl && customAudioRef.current) {
-        customAudioRef.current.play().catch((err) => {
-          console.warn("Custom audio playback failed, falling back to music box:", err);
-          startSynthMelody();
-        });
+      if (customAudioRef.current && activeAudioSrc) {
+        customAudioRef.current.volume = isMuted ? 0 : volume;
+        const playPromise = customAudioRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              setIsPlaying(true);
+            })
+            .catch((err) => {
+              console.warn("Custom audio playback failed, falling back to music box:", err);
+              startSynthMelody();
+              setIsPlaying(true);
+            });
+        }
       } else {
         startSynthMelody();
+        setIsPlaying(true);
       }
-      setIsPlaying(true);
     }
   };
 
@@ -143,16 +202,16 @@ export const MusicPlayer = ({ customAudioUrl, defaultVolume = 0.35 }) => {
 
   return (
     <div className="relative inline-flex items-center">
-      {/* Hidden custom audio element if user provides a file/url */}
-      {customAudioUrl && (
-        <audio
-          ref={customAudioRef}
-          src={customAudioUrl}
-          loop
-          preload="auto"
-          onEnded={() => setIsPlaying(false)}
-        />
-      )}
+      {/* Real audio element for full quality MP3 playback */}
+      <audio
+        ref={customAudioRef}
+        src={activeAudioSrc}
+        loop
+        preload="auto"
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
+        onEnded={() => setIsPlaying(false)}
+      />
 
       {/* Main Music Pill Button */}
       <div className="flex items-center gap-2 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full shadow-scrapbook border border-pastel-pink/50 hover:border-pastel-pink transition-all">
@@ -224,7 +283,7 @@ export const MusicPlayer = ({ customAudioUrl, defaultVolume = 0.35 }) => {
             </span>
           </div>
           <p className="text-[9px] text-gray-400 text-center font-cute">
-            Soft music handcrafted for Vanshu ♡
+            The Neighbourhood - Reflections ♡
           </p>
         </div>
       )}

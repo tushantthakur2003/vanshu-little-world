@@ -7,7 +7,7 @@
 import { supabase, isSupabaseConfigured } from './supabaseClient';
 import { siteContent as defaultContent } from '../data/content';
 import { optimizeImage } from '../utils/imageOptimizer';
-import { saveImageToStorage } from '../utils/imageStorage';
+import { saveImageToStorage, saveAudioToStorage, getAudioFromStorage, deleteAudioFromStorage } from '../utils/imageStorage';
 import { verifyPassword, hashString } from '../utils/auth';
 
 const STORAGE_KEYS = {
@@ -379,11 +379,19 @@ export const uploadMusicFile = async (file) => {
     }
   }
 
-  const dataUrl = await fileToDataUrl(file);
+  // Local storage: Save binary Blob directly into IndexedDB without hitting LocalStorage limits
+  try {
+    await saveAudioToStorage('custom_bg_music', file, fileName);
+  } catch (e) {
+    console.warn('Error saving audio to IndexedDB:', e);
+  }
+
+  const objectUrl = URL.createObjectURL(file);
   return {
-    url: dataUrl,
+    url: objectUrl,
     filename: fileName,
-    storageType: 'local',
+    storageType: 'local_indexeddb',
+    audioId: 'custom_bg_music',
   };
 };
 
