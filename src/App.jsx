@@ -194,6 +194,7 @@ export const App = () => {
           content={content}
           openedCards={openedCards}
           onMarkCardOpened={handleMarkCardOpened}
+          onResetProgress={handleResetProgress}
           onUpdateContent={() => {}}
         />
 

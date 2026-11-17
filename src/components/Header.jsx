@@ -44,8 +44,8 @@ export const Header = ({
               playCutePop();
               onResetProgress();
             }}
-            className="p-2 bg-white rounded-full border border-pastel-pink/50 hover:bg-pastel-pink-soft text-gray-400 hover:text-gray-600 transition-all shadow-sm hidden sm:flex"
-            title="Reset Exploration Progress"
+            className="p-2 bg-white rounded-full border border-pastel-pink/50 hover:bg-pastel-pink-soft text-gray-400 hover:text-gray-600 transition-all shadow-sm flex items-center justify-center"
+            title="Reset Exploration Progress (Start Fresh 0/6)"
             aria-label="Reset Progress"
           >
             <RefreshCw className="w-3.5 h-3.5" />

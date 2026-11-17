@@ -3,7 +3,7 @@ import {
   Heart, Sparkles, Save, Send, Eye, RotateCcw, Image as ImageIcon,
   Calendar, Gift, Lock, Music, User, Mail, Compass, HelpCircle,
   Plus, Trash2, ArrowUp, ArrowDown, Upload, Check, Cloud, Star,
-  LogOut, ExternalLink, RefreshCw, Volume2, Play, Pause, Smartphone, AlertCircle
+  LogOut, ExternalLink, RefreshCw, Volume2, Play, Pause, Smartphone, AlertCircle, Download
 } from 'lucide-react';
 import {
   getDraftContent,
@@ -104,6 +104,36 @@ export const AdminDashboard = ({ onNavigateHome, onContentUpdated }) => {
     } catch (err) {
       notify('No previous backup available to restore.', 'error');
     }
+  };
+
+  // 4. EXPORT CONTENT.JS (Downloads current content for permanent repository sync)
+  const handleExportContent = () => {
+    if (!formData) return;
+    playCutePop();
+    const fileContent = `// =====================================================================
+// VANSHU'S LITTLE WORLD 🎀 - CENTRAL CONTENT CONFIGURATION
+// =====================================================================
+
+export const siteContent = ${JSON.stringify(formData, null, 2)};
+
+siteContent.card1Letter = siteContent.loveLetter;
+siteContent.card2Hug = siteContent.whenYouMissMe;
+siteContent.card3Reasons = siteContent.reasonsILoveYou;
+siteContent.card4Comfort = siteContent.openWhenSad;
+siteContent.card5Memories = siteContent.photoGallery;
+siteContent.card6Surprise = siteContent.surpriseGift;
+siteContent.secretSurprise = siteContent.finalSecretSurprise;
+
+export default siteContent;
+`;
+    const blob = new Blob([fileContent], { type: 'text/javascript' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'content.js';
+    a.click();
+    URL.revokeObjectURL(url);
+    notify('content.js exported to your downloads! ♡', 'success');
   };
 
   // Logout
@@ -415,6 +445,16 @@ export const AdminDashboard = ({ onNavigateHome, onContentUpdated }) => {
                 <span className="hidden md:inline">Restore Backup</span>
               </button>
             )}
+
+            {/* Export content.js Button */}
+            <button
+              onClick={handleExportContent}
+              className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 rounded-full font-cute text-xs font-semibold flex items-center gap-1 transition-colors"
+              title="Export content.js file to sync with mobile and permanent repo"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span className="hidden lg:inline">Export content.js</span>
+            </button>
 
             {/* SAVE DRAFT BUTTON */}
             <button

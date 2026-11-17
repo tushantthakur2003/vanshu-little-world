@@ -12,6 +12,7 @@ export const Dashboard = ({
   content,
   openedCards,
   onMarkCardOpened,
+  onResetProgress,
   onUpdateContent,
 }) => {
   const totalCards = 6;
@@ -50,6 +51,15 @@ export const Dashboard = ({
               style={{ width: `${(openedCount / totalCards) * 100}%` }}
             />
           </div>
+          {openedCount > 0 && onResetProgress && (
+            <button
+              onClick={onResetProgress}
+              className="text-[10px] font-cute text-gray-400 hover:text-pastel-pink-deep transition-colors ml-0.5 underline"
+              title="Reset progress to 0/6"
+            >
+              Reset
+            </button>
+          )}
           {openedCount === totalCards && (
             <span className="text-xs font-cute text-pastel-pink-deep font-bold flex items-center gap-1 animate-pulse">
               <Sparkles className="w-3.5 h-3.5" /> Secret Unlocked!
